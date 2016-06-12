@@ -1,12 +1,19 @@
 import React from 'react';
 import {render} from 'react-dom';
+import $ from 'jquery';
 
 class TodoItems extends React.Component {
   render() {
+    var taskNodes = this.props.tasks.map( task => {
+      return (
+        <li>{task.taskText}</li>
+      );
+    });
+
     return (
-      <ul>
-        <li>Fake entry</li>
-      </ul>
+      <ol>
+        {taskNodes}
+      </ol>
     );
   }
 }
@@ -27,18 +34,36 @@ class TodoList extends React.Component {
     return (
       <div className="TodoList">
         <TodoForm />
-        <TodoItems />
+        <TodoItems tasks={this.props.tasks}/>
       </div>
     );
   }
 }
 
 class App extends React.Component {
+  constructor(props) {
+    super();
+
+    this.state = {
+      tasks: [{
+        taskText: '...Loading...'
+      }]
+    };
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      $.getJSON('/api/tasks', data => {
+        this.setState({tasks: data.tasks});
+      })
+    }, 500);
+  }
+
 	render () {
 		return (
       <div className="AppContainer">
         <h1>Toodoo</h1>
-        <TodoList />
+        <TodoList tasks={this.state.tasks}/>
       </div>
     );
 	}

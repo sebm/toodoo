@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/sebm/toodoo/issues"
   },
-  "homepage": "https://github.com/sebm/toodoo#readme"
+  "homepage": "https://github.com/sebm/toodoo#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
 }

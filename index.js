@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var app = express();
 
@@ -17,21 +19,34 @@ var server = new WebpackDevServer(webpack(config), {
 
 server.listen(WEBPACK_PORT, 'localhost')
 
-app.get('/api/tasks', function(req, res) {
+class TaskList {
+	constructor() {
+		this.tasks = [];
+	}
+
+	addTask(task) {
+		this.tasks.push({ taskText: task })
+	}
+
+	getTasks() {
+		return this.tasks;
+	}
+}
+
+const tl = new TaskList()
+
+app.get('/api/tasks', (req, res) => {
 	res.json({
-		tasks: [
-			{
-				taskText: 'Wash the dishes'
-			},
-			{
-				taskText: 'Pay brent'
-			}
-		]
+		tasks: tl.getTasks()
 	});
+});
+
+app.post('/api/tasks', (req, res) => {
+
 });
 
 app.use('/', express.static('static'));
 
 app.listen(SERVER_PORT, function() {
-	console.log(`listening on ${SERVER_PORT}`);
+	console.log(`node process listening on ${SERVER_PORT}`);
 });

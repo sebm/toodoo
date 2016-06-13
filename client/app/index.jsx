@@ -3,17 +3,36 @@ import {render} from 'react-dom';
 import $ from 'jquery';
 
 class TodoItems extends React.Component {
-  render() {
-    var taskNodes = this.props.tasks.map( task => {
+  emptyItemMessage() {
+    if (this.props.tasks.length === 0 && this.props.isLoaded) {
+      return (
+        <span className="TodoList-Items-EmptyMessage">
+          No tasks!
+        </span>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  taskNodes() {
+    var result = this.props.tasks.map( task => {
       return (
         <li>{task.taskText}</li>
       );
     });
 
+    return result;
+  }
+
+  render() {
     return (
-      <ol>
-        {taskNodes}
-      </ol>
+      <div className="TodoList-Items">
+        {this.emptyItemMessage()}
+        <ol>
+          {this.taskNodes()}
+        </ol>
+      </div>
     );
   }
 }
@@ -34,9 +53,24 @@ class TodoList extends React.Component {
     return (
       <div className="TodoList">
         <TodoForm />
-        <TodoItems tasks={this.props.tasks}/>
+        <TodoItems
+          isLoaded={this.props.isLoaded}
+          tasks={this.props.tasks}
+        />
       </div>
     );
+  }
+}
+
+class LoadingIndicator extends React.Component {
+  render () {
+    if (this.props.isLoaded) {
+      return null;
+    } else {
+      return (
+        <span>Loading&hellip;</span>
+      );
+    }
   }
 }
 
@@ -45,25 +79,29 @@ class App extends React.Component {
     super();
 
     this.state = {
-      tasks: [{
-        taskText: '...Loading...'
-      }]
+      tasks: [],
+      isLoaded: false
     };
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      $.getJSON('/api/tasks', data => {
-        this.setState({tasks: data.tasks});
-      })
-    }, 500);
+    $.getJSON('/api/tasks', data => {
+      this.setState({
+        tasks: data.tasks,
+        isLoaded: true
+      });
+    })
   }
 
 	render () {
 		return (
       <div className="AppContainer">
         <h1>Toodoo</h1>
-        <TodoList tasks={this.state.tasks}/>
+        <LoadingIndicator isLoaded={this.state.isLoaded} />
+        <TodoList
+          isLoaded={this.state.isLoaded}
+          tasks={this.state.tasks}
+        />
       </div>
     );
 	}

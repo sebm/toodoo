@@ -16,9 +16,9 @@ class TodoItems extends React.Component {
   }
 
   taskNodes() {
-    var result = this.props.tasks.map( task => {
+    var result = this.props.tasks.map( (task, i) => {
       return (
-        <li>{task.taskText}</li>
+        <li key={i} >{task.taskText}</li>
       );
     });
 
@@ -40,7 +40,7 @@ class TodoItems extends React.Component {
 class TodoForm extends React.Component {
   render() {
     return (
-      <form>
+      <form onSubmit>
         <input />
         <button />
       </form>

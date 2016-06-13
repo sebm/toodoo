@@ -3,6 +3,9 @@
 var express = require('express');
 var app = express();
 
+var bodyParser = require('body-parser');
+var jsonParser = bodyParser.json();
+
 var webpack = require('webpack');
 var config = require('./webpack.config.js')
 
@@ -41,12 +44,15 @@ app.get('/api/tasks', (req, res) => {
 	});
 });
 
-app.post('/api/tasks', (req, res) => {
+app.post('/api/tasks', jsonParser, (req, res) => {
+	if (!req.body)
+		return res.sendStatus(400);
 
+	tl.addTask(req.body.taskText)
 });
 
 app.use('/', express.static('static'));
 
-app.listen(SERVER_PORT, function() {
+app.listen(SERVER_PORT, () => {
 	console.log(`node process listening on ${SERVER_PORT}`);
 });

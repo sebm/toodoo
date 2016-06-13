@@ -9,7 +9,7 @@ var config = {
     APP_DIR + '/index.jsx'
   ],
   output: {
-    path: BUILD_DIR,
+    path: '/',
     filename: 'bundle.js'
   },
   module: {
